@@ -1,12 +1,7 @@
-import { expect, test } from "@playwright/test";
-import { LoginPage } from "../../pages/LoginPage";
-import { LoginSuccessPage } from "../../pages/LoginSuccessPage";
+import { expect } from "@playwright/test";
+import { test } from "../../fixture";
 
-test("postive login flow", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const loginSuccessPage = new LoginSuccessPage(page);
-
-  await loginPage.navigateToLoginPage();
+test("postive login flow", async ({ loginSuccessPage, loginPage }) => {
   await loginPage.login("student", "Password123");
 
   await expect(loginSuccessPage.getPageHeading()).toHaveText(
@@ -14,6 +9,18 @@ test("postive login flow", async ({ page }) => {
   );
 });
 
-test("negative login flow - incorrect username", async ({ page }) => {});
+test("negative login flow - incorrect username", async ({ loginPage }) => {
+  await loginPage.login("incorrectUser", "Password123");
 
-test("negative login flow - incorrect password", async ({ page }) => {});
+  await expect(loginPage.getErrorText()).toHaveText(
+    "Your username is invalid!",
+  );
+});
+
+test("negative login flow - incorrect password", async ({ loginPage }) => {
+  await loginPage.login("student", "incorrectPassword");
+
+  await expect(loginPage.getErrorText()).toHaveText(
+    "Your password is invalid!",
+  );
+});
