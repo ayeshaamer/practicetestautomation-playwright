@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixture";
+import { AllureHelper } from "../../utils/AllureHelper";
 
 test("postive login flow", async ({ loginSuccessPage, loginPage }) => {
   await loginPage.login("student", "Password123");
